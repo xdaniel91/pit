@@ -8,10 +8,8 @@ public class PitContext : DbContext
 {
     public DbSet<Produto> produto { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseNpgsql(@"Host=host.docker.internal;Port=49153;Database=postgres;Username=postgres;Password=postgrespw");
-    }
+    public PitContext(DbContextOptions<PitContext> options) : base(options) { }
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -10,10 +10,19 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 builder.Services.AddControllers();
+
+var ServiceProvider = CreateServices(builder);
+
+builder.Services.AddDbContext<PitContext>(
+options => options.UseNpgsql(builder.Configuration.GetConnectionString("database19")));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<PitContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("database19")));
+
 builder.Services.AddScoped<IProdutoService, ProdutoService>();
+
+using var scope = ServiceProvider.CreateScope();
+UpdateDatabase(scope.ServiceProvider);
 
 var app = builder.Build();
 
