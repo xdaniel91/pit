@@ -25,7 +25,6 @@ using var scope = ServiceProvider.CreateScope();
 UpdateDatabase(scope.ServiceProvider);
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-var app = builder.Build();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -34,6 +33,7 @@ builder.Services.AddCors(options =>
                           policy.WithOrigins("https://pit.azurewebsites.net/");
                       });
 });
+var app = builder.Build();
 app.UseCors(MyAllowSpecificOrigins);
 app.UseSwagger();
 app.UseSwaggerUI();
