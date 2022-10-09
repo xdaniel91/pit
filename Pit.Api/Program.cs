@@ -24,15 +24,20 @@ builder.Services.AddScoped<IProdutoService, ProdutoService>();
 using var scope = ServiceProvider.CreateScope();
 UpdateDatabase(scope.ServiceProvider);
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+builder.Services.AddCors(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    app.UseCors();
-}
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("https://pit.azurewebsites.net/");
+                      });
+});
+app.UseCors(MyAllowSpecificOrigins);
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseHttpsRedirection();
 
@@ -40,7 +45,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseCors();
 app.Run();
 
 
