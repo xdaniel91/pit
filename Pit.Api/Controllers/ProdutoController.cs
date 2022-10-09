@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Pit.Api.Models;
 using Pit.Api.Requests;
 using Pit.Api.Services.Interfaces;
 
@@ -39,11 +38,11 @@ public class ProdutoController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Adicionar([FromBody] Produto produto)
+    public IActionResult Adicionar([FromBody] ProdutoCreateRequest request)
     {
         try
         {
-            var resposta = _produtoService.AdicionarProduto(produto);
+            var resposta = _produtoService.AdicionarProduto(request);
             return StatusCode(StatusCodes.Status201Created, resposta);
         }
         catch (Exception ex)
@@ -53,11 +52,11 @@ public class ProdutoController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> AtualizarAsync([FromBody] ProdutoDto produtoDto)
+    public async Task<IActionResult> AtualizarAsync([FromBody] ProdutoDto produtoDto, int id)
     {
         try
         {
-            var resposta = await _produtoService.AtualizarProdutoAsync(produtoDto);
+            var resposta = await _produtoService.AtualizarProdutoAsync(produtoDto, id);
             return StatusCode(StatusCodes.Status200OK, resposta);
         }
         catch (Exception ex)

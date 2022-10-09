@@ -15,9 +15,9 @@ public class ProdutoService : IProdutoService
         _context = context;
     }
 
-    public async Task<Produto> AtualizarProdutoAsync(ProdutoDto produtoDto)
+    public async Task<Produto> AtualizarProdutoAsync(ProdutoDto produtoDto, int id)
     {
-        var produtoAtualizar = await ObterProdutoPeloIdAsync(produtoDto.Id);
+        var produtoAtualizar = await ObterProdutoPeloIdAsync(id);
 
         if (!string.IsNullOrEmpty(produtoDto.Nome))
             produtoAtualizar.Nome = produtoDto.Nome;
@@ -36,7 +36,7 @@ public class ProdutoService : IProdutoService
         return entry.Entity;
     }
 
-    public Produto AdicionarProduto(Produto produto)
+    public Produto AdicionarProduto(ProdutoCreateRequest produto)
     {
         if (string.IsNullOrEmpty(produto.Nome))
             throw new Exception("Informe o nome do produto.");
@@ -44,22 +44,25 @@ public class ProdutoService : IProdutoService
         if (string.IsNullOrEmpty(produto.CodigoBarras))
             throw new Exception("Informe o código de barras do produto.");
 
-        if (string.IsNullOrEmpty(produto.CodigoBarras))
+        if (string.IsNullOrEmpty(produto.Descricao))
             throw new Exception("Informe a descrição do produto.");
 
         if (produto.Valor <= 0)
             throw new Exception("Informe um valor válido para o produto.");
 
-        produto.Nome = produto.Nome.ToLower();
-        produto.CodigoBarras = produto.CodigoBarras.ToLower();
-        produto.Descricao = produto.Descricao.ToLower();
-        produto.DataHoraCriado = DateTime.UtcNow;
-        produto.Ativo = true;
-
+        var produtoAdicionar = new Produto
+        {
+            Nome = produto.Nome.ToLower(),
+            CodigoBarras = produto.CodigoBarras.ToLower(),
+            Descricao = produto.Descricao.ToLower(),
+            Valor = produto.Valor,
+            DataHoraCriado = DateTime.UtcNow,
+            Ativo = true
+        };
 
         try
         {
-            var entry = _context.produto.Add(produto);
+            var entry = _context.produto.Add(produtoAdicionar);
             var resultado = _context.SaveChanges();
 
             if (resultado > 0)
