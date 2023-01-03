@@ -55,7 +55,7 @@ static IServiceProvider CreateServices(WebApplicationBuilder builder)
     return new ServiceCollection()
         .AddFluentMigratorCore()
     .ConfigureRunner(rb => rb.AddPostgres()
-    .WithGlobalConnectionString(builder.Configuration.GetConnectionString("databse19"))
+    .WithGlobalConnectionString(builder.Configuration.GetConnectionString("database19"))
     .ScanIn(typeof(TabelaProduto).Assembly).For.Migrations())
     .AddLogging(lb => lb.AddFluentMigratorConsole())
     .BuildServiceProvider(false);
